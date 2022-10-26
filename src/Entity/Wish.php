@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Repository\WishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WishRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,6 +16,8 @@ class Wish
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Veuillez saisir un titre')]
+    #[Assert\Length(min: 5, max: 250, minMessage: 'Le titre doit faire plus de 5 caractères.')]
     #[ORM\Column(length: 250)]
     private ?string $title = null;
 
@@ -26,10 +28,14 @@ class Wish
     private ?string $author = null;
 
     #[ORM\Column]
-    private ?bool $isPublished = null;
+    private ?bool $isPublished = true;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreated = null;
+
+    #[ORM\ManyToOne(inversedBy: 'wishes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -102,5 +108,17 @@ class Wish
         if ($this->getDateCreated() === null) {
             $this->setDateCreated(new \DateTime());
         }
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
     }
 }

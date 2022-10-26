@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}
+    - Nouveau souhait
+{% endblock %}
+
+{% block body %}
+
+    <h1>Création d'un nouveau souhait</h1>
+
+    {% include 'wish/_form.html.twig' with { 'btnText': 'Ajouter' } %}
+
+{% endblock %}
+
